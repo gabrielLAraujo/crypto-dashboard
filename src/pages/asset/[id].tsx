@@ -4,6 +4,8 @@ import { Container, Loader, Title, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { getAssetById } from '../../lib/coinApi';
 import { CryptoAsset } from '@/types/crypto';
+import { CryptoChart } from '@/components/cryptoChar';
+import axios from 'axios';
 
 export default function AssetPage() {
   const router = useRouter();
@@ -18,13 +20,20 @@ export default function AssetPage() {
         const response = await getAssetById(id as string);
         setData(response);
         setLoading(false);
-      } catch (error) {
-        setError(error as string);
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          setError(err.message);
+        } else {
+          setError('An unexpected error occurred');
+        }
         setLoading(false);
       }
     };
-    fetchAsset();
+    if (id) {
+      fetchAsset();
+    }
   }, [id]);
+  
   if (loading) return <Loader />;
   if (error) return <Text color="red">{error}</Text>;
   return (
@@ -33,6 +42,14 @@ export default function AssetPage() {
       <Text size="xl">Current Price: ${data?.current_price}</Text>
       <Text size="md">Market Cap: ${data?.market_cap}</Text>
       <Text size="md">24h Volume: ${data?.total_volume}</Text>
-    </Container>
+      <CryptoChart
+        data={
+          data?.sparkline_in_7d?.price.map((price, index) => ({
+            time: `${index}`,
+            price,
+          })) || []
+        }
+      />
+      </Container>
   );
 }

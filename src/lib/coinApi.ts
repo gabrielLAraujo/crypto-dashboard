@@ -10,7 +10,9 @@ export const getAssets = async () => {
           order: 'market_cap_desc',
           per_page: 20,
           page: 1,
-          sparkline: false,
+
+
+          sparkline: true,
         },
       });
   return data;
@@ -20,6 +22,7 @@ export const getAssetById = async (id: string) => {
     const { data } = await axios.get(`${COIN_API_URL}/${id}`, {
         params: {
             vs_currency: 'usd',
+            sparkline: true,
         },
     });
     console.log(data);

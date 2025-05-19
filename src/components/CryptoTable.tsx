@@ -1,6 +1,6 @@
 import { CryptoAsset } from '@/types/crypto';
 import { useCryptoAssets } from '../hooks/useCryptoAssets';
-import { Table,Checkbox, ActionIcon, Group, Button } from '@mantine/core';
+import { Table,Checkbox, ActionIcon, Group, Button, Image } from '@mantine/core';
 import { useState } from 'react';
 import { IconStar } from '@tabler/icons-react';
 import { IconStarFilled } from '@tabler/icons-react';
@@ -22,8 +22,7 @@ export default function CryptoTable() {
     );
   };
   const filteredData = showFavoritesOnly ? data.filter((asset: CryptoAsset) => watchlist.includes(asset.id)) : data;
-
-  console.log(data);
+  console.log('filteredData', filteredData);
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Failed to load data</p>;
   const rows = filteredData.map((asset: CryptoAsset) => (
@@ -51,7 +50,7 @@ export default function CryptoTable() {
   </ActionIcon>
 </Table.Td>
 
-      <Table.Td><img src={asset.image} alt={asset.name} width="25" /></Table.Td>
+      <Table.Td><Image src={asset.image} alt={asset.name} width="25" /></Table.Td>
       <Table.Td><Link href={`/asset/${asset.id}`}>{asset.name}</Link></Table.Td>
       <Table.Td>{asset.symbol.toUpperCase()}</Table.Td>
       <Table.Td>${asset.current_price.toFixed(2)}</Table.Td>
